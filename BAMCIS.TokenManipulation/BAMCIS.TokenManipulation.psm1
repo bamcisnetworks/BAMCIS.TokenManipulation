@@ -24,11 +24,9 @@ Function Get-TokenGroups {
     [CmdletBinding()]
     [OutputType([System.String[]])]
     Param(
-
     )
 
-    Begin {
-        
+    Begin {        
     }
 
     Process {
@@ -314,11 +312,11 @@ Function Get-ProcessToken {
 		# Create the dictionary 
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
 
-		$Set = Get-Process | Select-Object -ExpandProperty Name 
-		New-DynamicParameter -Name "ProcessName" -Alias "Name" -Mandatory -ParameterSets "Name" -Type ([System.String]) -Position 0 -ValueFromPipeline -ValidateSet $Set -RuntimeParameterDictionary $RuntimeParameterDictionary | Out-Null
+		$Set = Get-Process | Select-Object -Property Name, Id
 
-		$Set = Get-Process | Select-Object -ExpandProperty Id 
-		New-DynamicParameter -Name "ProcessId" -Alias "Id" -Mandatory -ParameterSets "Id" -Type ([System.Int32]) -Position 0 -ValueFromPipeline -ValidateSet $Set -RuntimeParameterDictionary $RuntimeParameterDictionary | Out-Null
+		New-DynamicParameter -Name "ProcessName" -Alias "Name" -Mandatory -ParameterSets "Name" -Type ([System.String]) -Position 0 -ValueFromPipeline -ValidateSet ($Set | Select-Object -ExpandProperty Name) -RuntimeParameterDictionary $RuntimeParameterDictionary | Out-Null
+
+		New-DynamicParameter -Name "ProcessId" -Alias "Id" -Mandatory -ParameterSets "Id" -Type ([System.Int32]) -Position 0 -ValueFromPipeline -ValidateSet ($Set | Select-Object -ExpandProperty Id) -RuntimeParameterDictionary $RuntimeParameterDictionary | Out-Null
 		
 		return $RuntimeParameterDictionary
 	}
@@ -622,7 +620,6 @@ Function Set-TokenPrivilege {
 	}
 
 	End {
-
 	}
 }
 
